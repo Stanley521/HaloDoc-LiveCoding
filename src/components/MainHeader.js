@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 export default function MainHeader() {
-    return <h1>
-        Header
-    </h1>
+    return <div>
+        <h1>
+            Products
+        </h1>
+    </div>
 }

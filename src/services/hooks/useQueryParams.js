@@ -1,4 +1,3 @@
-//import React from 'react'
 import qs from 'query-string'
 import { useLocation } from 'react-router-dom'
 

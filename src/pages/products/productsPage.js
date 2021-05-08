@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Button, Col, Form, Modal } from "react-bootstrap";
-import useQueryParams from "../../services/hooks/useQueryParams";
+import { Alert, Button, Form } from "react-bootstrap";
 import { rest } from '../../services/rest';
-import history from '../../navigation/browserHistory';
-import qs from 'query-string';
 import CartModal from "./components/CartModal";
 import { addToCart } from "./services/cart-services";
 import debounce from 'lodash.debounce';
+import { useHistory } from "react-router-dom";
 
 function ProductList({
     data,
@@ -14,6 +12,7 @@ function ProductList({
     page, setPage,
     lastPage
 }) {
+    const history = useHistory()
     function goToProduct(id) {
         history.push(`/product/${id}`)
     }
@@ -61,53 +60,24 @@ function SearchComponent({
     setSearch,
     openCart
 }) {
-    // const [search, setSearch] = useState('');
-    // const queryParams = useQueryParams();
-    // function pushQuery(query) {
-
-    //     history.push({
-    //         pathname: history?.location?.pathname,
-    //         search: `?` + qs.stringify(query),
-    //     })
-    // }
-    // function onSubmit(e) {
-    //     // e.preventDefault();
-    //     let query = {}
-    //     if (search !== '') {
-    //         query.search = search;
-    //     }
-    //     pushQuery(query)
-    // }
     return (
         <div className="flex flex-row">
             <div className="flex flex-row">
                 <Form.Group controlId="formBasicSearch">
-                    <Form.Control type="text" placeholder="Search products" value={search} onChange={(e) => { setSearch(e.target.value) }} />
+                    <Form.Control type="text" placeholder="Search products" value={search} onChange={(e) => {
+                        setSearch(e.target.value)
+                    }} />
                 </Form.Group>
                 <div style={{ width: 10 }}></div>
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
             </div>
             <div style={{ width: 150 }}></div>
             <Button variant="primary" type="submit" onClick={() => { openCart() }}>
                 Cart
             </Button>
         </div>
-        // <Form onSubmit={onSubmit}>
-        //     <div className="flex flex-row">
-        //         <Form.Group controlId="formBasicSearch">
-        //             <Form.Control type="text" placeholder="Search products" value={search} onChange={(e) => { setSearch(e.target.value) }} />
-        //         </Form.Group>
-        //         <Button variant="primary" type="submit">
-        //             Submit
-        //         </Button>
-        //     </div>
-        // </Form>
     )
 }
 export default function ProductsPage() {
-    // const { search } = useQueryParams();
     const limit = 10
     const [search, setSearch] = useState();
     const [data, setData] = useState([]);
@@ -131,16 +101,16 @@ export default function ProductsPage() {
     }
     function onSubmit(e) {
         e.preventDefault();
-        setSearch(search)
+        changeSearch(search)
     }
 
-    useEffect(() => {
-        getProducts(search, 1)
-    }, [search])
+    // useEffect(() => {
+    //     getProducts(search, 1)
+    // }, [search])
 
     useEffect(() => {
         getProducts(search, page)
-    }, [page])
+    }, [search, page])
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -173,23 +143,26 @@ export default function ProductsPage() {
 
 
     const debouncedSave = useCallback(
-		debounce(() => handleClose(), 1000),
-		[], // will be created only once initially
-	);
+        debounce(() => handleClose(), 1000),
+        [], // will be created only once initially
+    );
 
-    // const [alertTimeout, setAlertTimeout] = useState();
     useEffect(() => {
         if (!show) return;
         debouncedSave();
-    }, [show])
+    }, [show, debouncedSave])
 
     const [showCart, setShowCart] = useState(false);
     function closeCart() { setShowCart(false) }
     function openCart() { setShowCart(true) }
 
+    function changeSearch(text) {
+        setSearch(text);
+        setPage(1)
+    }
     return (
         <div>
-            <SearchComponent search={search} setSearch={setSearch} onSubmit={onSubmit} openCart={openCart} />
+            <SearchComponent search={search} setSearch={changeSearch} onSubmit={onSubmit} openCart={openCart} />
             <Alert show={show} variant="success" style={{
                 width: 300,
                 margin: 10,

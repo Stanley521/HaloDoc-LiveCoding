@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Form } from "react-bootstrap";
-import useQueryParams from "../../services/hooks/useQueryParams";
+import { Button, Form } from "react-bootstrap";
 import { rest } from '../../services/rest';
-import history from '../../navigation/browserHistory';
-import qs from 'query-string';
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 
 export default function ProductPage() {
-
+    const history = useHistory()
     const { productId } = useParams();
     const [data, setData] = useState({})
     const [comment, setComment] = useState('');
@@ -23,17 +20,11 @@ export default function ProductPage() {
             console.error('Something wrong when parsing Comments')
         }
         setComments(getComments)
-    }, [])
+    }, [productId])
     const [comments, setComments] = useState([])
 
     async function onSubmit(e) {
-        // const json = localStorage.getItem(productId) || JSON.stringify([]);
-        // try {
-        //     c = JSON.parse(json);
-        // } catch (error) {
-        //     console.error('Something wrong when parsing Comments')
-        // }
-        
+
         let c = [...comments];
         c.push({
             comment: comment,
@@ -61,7 +52,7 @@ export default function ProductPage() {
     }, [productId])
     return (
         <div>
-            <Button variant="secondary" type="submit" onClick={() => { history.back() }}>
+            <Button variant="secondary" type="submit" onClick={() => { history.goBack() }}>
                 back
             </Button>
 

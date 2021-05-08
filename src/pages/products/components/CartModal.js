@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, Col, Form, Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 
 export default function CartModal({
     show,
     handleClose
 }) {
-    // localStorage.setItem('cart', JSON.stringify([]));
     useEffect(() => {
         const json = localStorage.getItem('cart') || JSON.stringify([]);
         let getComments = [];
@@ -27,7 +26,6 @@ export default function CartModal({
             if (item.quantity > 1) {
                 c[index].quantity = c[index].quantity - 1;
             }
-            console.log(c)
             localStorage.setItem('cart', JSON.stringify(c));
             setCart(prevState => {
                 return [...c]
@@ -77,7 +75,6 @@ export default function CartModal({
                             (() => {
                                 let max = 0;
                                 cart.forEach((value) => {
-                                    console.log(value)
                                     max = max + (value.product_price * value.quantity)
                                 })
                                 return max;
