@@ -19,7 +19,7 @@ function ProductList({
     return (
         <div>
             <table>
-                <thead>
+                <thead style={{ display: 'block' }}>
                     <tr>
                         <th width="200">Name</th>
                         <th width="100">Price</th>
